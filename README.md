@@ -2,4 +2,6 @@
 Recreational Computer Science
 
 _TODO: domain: reccs.io_
-_TODO: automate post display
+
+
+_TODO: automate post display_
