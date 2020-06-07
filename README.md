@@ -1,7 +1,4 @@
-# cross21.github.io
-Recreational Computer Science
-
-_TODO: domain: reccs.io_
-
+# csbit.github.io
+Recreational Computer Science Blog
 
 _TODO: automate post display_
