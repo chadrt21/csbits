@@ -1,6 +1,8 @@
 # csbit.github.io
 Computer Science Bit Blog
 
-_TODO: automate post display_
+_TODO:_ 
 
-_TODO: automate post email_
+- [ ] automate post display
+
+- [ ] automate post email
