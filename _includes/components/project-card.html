@@ -1,0 +1,25 @@
+<div class="card mb-2">
+    <div class="card-body">
+        <h4 class="card-title mb-4">
+            <a href="{{ project.link_page }}">{{ project.title }}</a>
+        </h4>
+        <h6 class="card-subtitle mb-3 text-secondary">
+            {{ project.date | date: "%Y" }}
+        </h6>
+        <div class="card-text d-flex align-items-center mb-2">
+            <span class="icon grey mr-2 mb-1">
+                {% include entypo/pencil.svg %}
+            </span>
+            <div>
+                {% for tag in project.project_tags %}
+                    <span class="d-inline-block border rounded p-1 mr-1 mb-1 tag tag-{{ tag | slugify}}">
+                        {{ tag }}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card-text mb-0">
+            {{ project.excerpt }}
+        </div>
+    </div>
+</div>

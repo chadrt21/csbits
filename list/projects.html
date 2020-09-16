@@ -1,0 +1,78 @@
+---
+title: All projects by year
+show_tags: true
+permalink: list/projects.html
+---
+
+<div class="d-md-block d-lg-none mb-3">
+    {% include components/all-tags-projects.html %}
+</div>
+
+<div id="currently-showing">
+    <h2 class="d-flex align-items-center mb-3">
+        <span class="text-secondary mr-2">Showing everything matching:</span>
+        <span class="border rounded p-2 mr-2 bg-light text-secondary" id="active-tag"></span>
+        <a class="btn btn-primary btn-small" href="javascript:void(0)" onclick="clearProjectTags()">clear</a>
+    </h4>
+</div>
+
+{% capture written_year %}'None'{% endcapture %}
+{% for project in site.projects reversed %}
+
+    {% capture year %}{{ project.date | date: '%Y' }}{% endcapture %}
+
+    {% if year != written_year %}
+        <h5 class="text-secondary mt-4 mb-4 p-2 bg-light rounded" id="{{ year | slugify }}">
+            {{ year }}
+        </h5>
+        {% capture written_year %}{{ year }}{% endcapture %}
+    {% endif %}
+
+    {% include components/project-card.html %}
+
+{% endfor %}
+
+<script type="text/javascript">
+
+    var parseHash = function() {
+        if (document.location.hash.length > 0) {
+            var tag = document.location.hash.slice(1)
+            var name = $(".project_tags-" + tag).first().text()
+            showProjectByTag(tag, name)
+        }
+        else {
+            clearProjectTags()
+        }
+    }
+
+    $(document).ready(parseHash);
+
+    $(window).on('hashchange', parseHash);
+
+    var showProjectByTag = function(tag, name) {
+        $("#currently-showing").show()
+        $(".card-project").hide()
+        $(".project_tags").removeClass("bg-warning")
+            .addClass("bg-white")
+            .removeClass("text-dark")
+        $(".card-project").each(function(idx, card) {
+            var matches = $(card).find(".project_tags-" + tag)
+            if (matches.length > 0) $(card).show()
+        })
+        $(".project_tags-" + tag).removeClass("bg-white")
+            .addClass("bg-warning")
+            .addClass("text-dark")
+            .blur()
+        $("#active-tag").html(name)
+    }
+
+    var clearProjectTags = function() {
+        $("#currently-showing").hide()
+        $(".card-project").show()
+        $(".project_tags").removeClass("bg-warning")
+            .addClass("bg-white")
+            .removeClass("text-dark")
+        document.location.hash = ""
+    }
+
+</script>
