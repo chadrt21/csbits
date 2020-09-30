@@ -1,5 +1,5 @@
 ---
-title:  Problem B: Comma Sprinkler (2018)
+title:  "Problem B: Comma Sprinkler (2018)"
 tags:
   - ACM ICPC
 ---
@@ -10,11 +10,7 @@ While this problem is relatively simple it can be misleading if you don't take i
 
 ## The Problem
 
-<iframe src="./ACM/2018-problem-B.pdf" width="100% height=100%">
-</iframe>
-
-
-{% <embed src="./ACM/2018-problem-B.pdf" type="application/pdf" /> %}
+<embed src="{{ site.baseurl}}/ACM/problemB-2018.pdf" type="application/pdf" />
 
 ## Analysis
 
