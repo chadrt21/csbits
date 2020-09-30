@@ -1,0 +1,16 @@
+I" <p>While this problem is relatively simple it can be misleading if you donâ€™t take into account the time limit (the big O of the algorithm).</p>
+
+<!--more-->
+
+<h2 id="problem">Problem</h2>
+
+<embed src="https://drive.google.com/viewerng/viewer?embedded=true&amp;url=/csbits/ACM/problemB-2018.pdf" type="application/pdf" width="100%" height="745px" />
+
+<h2 id="analysis">Analysis</h2>
+
+<p>If this problem was solved using brute force then it becomes a problem to solve as the text gets larger; O(n^2).</p>
+
+<p>Since this problem is comparing the relation between words it can be viewed as a graph problem; which simplifies the problem.</p>
+
+<h2 id="solution">Solution</h2>
+:ET

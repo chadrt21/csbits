@@ -8,9 +8,9 @@ While this problem is relatively simple it can be misleading if you don't take i
 
 <!--more-->
 
-## The Problem
+## Problem
 
-<embed src="{{ site.baseurl}}/ACM/problemB-2018.pdf" type="application/pdf" />
+<embed src="https://drive.google.com/viewerng/viewer?embedded=true&url={{site.baseurl}}/ACM/problemB-2018.pdf" type="application/pdf" width="100%" height="745px" />
 
 ## Analysis
 
