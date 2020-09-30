@@ -10,7 +10,7 @@ While this problem is relatively simple it can be misleading if you don't take i
 
 ## Problem
 
-<embed src="{{site.baseurl}}/problemB-2018.pdf" type="application/pdf" width="100%" height="745px" />
+<embed src="https://drive.google.com/viewerng/viewer?embedded=true&url={{site.baseurl}}/problemB-2018.pdf" type="application/pdf" width="100%" height="745px" />
 
 ## Analysis
 
