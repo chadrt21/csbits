@@ -1,9 +1,9 @@
-I"d*<h2 id="what-i-do">What I do</h2>
+I":*<h2 id="what-i-do">What I do</h2>
 <hr />
 
 <p>I’m a versatile software engineer, with skills in Python, C++, Java, JavaScript, and loves exploring and solving computer science problems.</p>
 
-<p><a href="/csbits/csbits/about.html">More about me</a></p>
+<p><a href="/about.html">More about me</a></p>
 
 <h2 id="recent-projects">Recent Projects</h2>
 <hr />
@@ -148,7 +148,7 @@
 <div class="card mb-2">
     <div class="card-body">
         <h4 class="card-title mb-4">
-            <a href="http://localhost:4000/csbits/2020/09/29/Comma-Sprinkler.html">Problem B: Comma Sprinkler (2018)</a>
+            <a href="http://localhost:4000/2020/09/29/Comma-Sprinkler.html">Problem B: Comma Sprinkler (2018)</a>
         </h4>
         <h6 class="card-subtitle mb-3 text-secondary">
             29 Sep 2020
@@ -185,14 +185,14 @@
 
 
         </div>
-        <a href="http://localhost:4000/csbits/2020/09/29/Comma-Sprinkler.html">More...</a>
+        <a href="http://localhost:4000/2020/09/29/Comma-Sprinkler.html">More...</a>
     </div>
 </div>
 
 <div class="card mb-2">
     <div class="card-body">
         <h4 class="card-title mb-4">
-            <a href="http://localhost:4000/csbits/2020/05/20/Reflections-of-College.html">Reflections of College</a>
+            <a href="http://localhost:4000/2020/05/20/Reflections-of-College.html">Reflections of College</a>
         </h4>
         <h6 class="card-subtitle mb-3 text-secondary">
             20 May 2020
@@ -229,7 +229,7 @@
 
 
         </div>
-        <a href="http://localhost:4000/csbits/2020/05/20/Reflections-of-College.html">More...</a>
+        <a href="http://localhost:4000/2020/05/20/Reflections-of-College.html">More...</a>
     </div>
 </div>
 
