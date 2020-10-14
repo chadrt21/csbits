@@ -1,0 +1,75 @@
+I" <p>There are problems that are easy to solve as long as you understand the problem correctly.</p>
+
+<!--more-->
+
+<h2 id="problem">Problem</h2>
+
+<p>A farm deployed a robot as a moving scarecrow for its corn field. The robot moves along a loop pathway that surrounds the corn field. On the pathway there are a number of unmanned command posts, numbered sequentially starting from 1.</p>
+
+<p>Every day the robot starts at post number 1 and moves in the direction of post number 2. Then, for the whole day, every time the robot reaches a command post it receives a command, which can be “continue to the next command post”, “report and remain at this command post”, or “turn back and return to the previous command post”.</p>
+
+<p>Your team is to write a program that will, given the list of commands received by the robot during the day, determine how many times the robot was at a specified command post.</p>
+
+<p>The first line contains three integers N , C and P indicating respectively the number of posts (2 ≤ N ≤ 10^3 ), the number of commands (1 ≤ C ≤ 10^5 ) and a specific command post (1 ≤ P ≤ N ). Values on this line are separated from each other by one or more spaces. The remaining input consists of C lines, with each line containing a number representing a command: 1 for the command “continue to the next command post”, 0 for “report and remain at this command post”, or −1 for the command “turn back and return to the previous post”. The robot starts at post number 1, turned in the direction of post number 2, and the first command value is always 1, so the robot’s first movement is always from post 1 to post 2. A “continue to the next command post” command at post N causes the robot to move to post 1; a “turn back and return to the previous post” command at post 1 causes the robot to move to post N. No leading or trailing whitespace will appear on an input line.</p>
+
+<p>Output a line containing one integer, the number times the robot was at post number P , without leading zeroes or leading or trailing whitespace.</p>
+
+<p><strong>Sample Input</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>10 9 2
+1
+1
+1
+1
+-1
+0
+-1
+-1
+1
+</code></pre></div></div>
+
+<p><strong>Output for Sample Input</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2
+</code></pre></div></div>
+
+<h2 id="analysis">Analysis</h2>
+<p>This problem can be boiled down to just keeping track of the robot and if the robot goes past the last or first post then it loops around.</p>
+
+<h2 id="solution">Solution</h2>
+<p>This solution could have been more simpler but for straight forward problems such as this a simple logic solution is just fine especially since time is a factor in this competitions.</p>
+
+<p><strong>Python</strong></p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Input data from input.txt then output number of times the robot was at post number P
+# N = 'number of posts' C = 'number of commands' P = 'a specific command post'
+# 1 = 'continue to next post'
+# -1 = 'go back to previous post'
+# 0 = 'stay at current post'
+</span>
+<span class="k">try</span><span class="p">:</span>
+	<span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">post</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'input.txt'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_object</span><span class="p">:</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="n">file_object</span><span class="p">.</span><span class="n">read</span><span class="p">()</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">split</span><span class="p">()</span>
+		<span class="n">N</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">C</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+		<span class="n">P</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+		<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">:]:</span>
+			<span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">post</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">P</span><span class="p">):</span>
+				<span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+			<span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s">'1'</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">post</span> <span class="o">&gt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+					<span class="n">post</span> <span class="o">=</span> <span class="mi">1</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">post</span> <span class="o">+=</span> <span class="mi">1</span>
+			<span class="k">elif</span> <span class="n">line</span> <span class="o">==</span> <span class="s">'-1'</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">post</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+					<span class="n">post</span> <span class="o">=</span> <span class="n">N</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">post</span> <span class="o">-=</span> <span class="mi">1</span>
+
+	<span class="k">print</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+	<span class="k">pass</span>
+<span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+	<span class="k">raise</span> <span class="n">e</span>
+</code></pre></div></div>
+:ET
