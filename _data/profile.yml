@@ -9,3 +9,7 @@
 - caption: Follow Me
   href: https://www.twitter.com/chadrt21
   icon: entypo/twitter.svg
+
+- caption: StackOverflow
+  href: https://stackoverflow.com/users/14446555/chadrt21?tab=profile
+  icon: icons/stackoverflow.svg
