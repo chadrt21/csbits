@@ -1,0 +1,270 @@
+I"�I<p>Matt Parker’s recent <a href="https://www.think-maths.co.uk/19challenge">puzzle</a> has had me intrigued.</p>
+
+<!--more-->
+
+<h2 id="the-challenge">The Challenge</h2>
+<p>“If you square all of the first 19 primes and add them you get a multiple of 19.
+Enter any number n where the first n primes squared, add to a multiple of n. Any n ≠ 1 counts, but bigger is better!”</p>
+
+<p>In other words, find the largest n where <a href="https://www.codecogs.com/eqnedit.php?latex=(\sum_{i=1}^{n}&space;p_i^2&space;)&space;%&space;n&space;=&space;0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?(\sum_{i=1}^{n}&space;p_i^2&space;)&space;%&space;n&space;=&space;0" title="(\sum_{i=1}^{n} p_i^2 ) % n = 0" /></a> where p<sub>i</sub> is the ith prime.</p>
+
+<h2 id="the-approach">The Approach</h2>
+<p>While there are many different approaches to a problem like this, since this looks like a simple enough problem, I decided to use a simple tool: Python.</p>
+
+<p>The iteration was a quick brute force.</p>
+
+<h4 id="first-version">First version:</h4>
+<p>run time of the first 10,000 primes: ~2:37 minutes</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">sympy</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>   <span class="c1"># progress bar (may need to install package from: https://github.com/tqdm/tqdm)
+</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+<span class="n">n_max</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">n_array</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">primes</span> <span class="o">=</span> <span class="p">[</span><span class="n">sympy</span><span class="o">.</span><span class="n">prime</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">tpdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">))]</span>
+<span class="n">primes_sq</span> <span class="o">=</span> <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="nb">pow</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">primes</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">tpdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n_max</span><span class="p">)):</span>
+    <span class="k">if</span><span class="p">((</span><span class="nb">sum</span><span class="p">(</span><span class="n">primes_sq</span><span class="p">[:</span><span class="n">n</span><span class="p">])</span> <span class="o">%</span> <span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">n_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"Duration:"</span><span class="p">,</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">-</span><span class="n">start</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">n_array</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>But it wasn’t until I ran it that I realize a couple of issues with my first iteration of this program.</p>
+
+<p>The main issue is the generation of prime numbers via <a href="https://docs.sympy.org/latest/modules/ntheory.html#sympy.ntheory.generate.prime">sympy.prime()</a>
+which can take a while to generate all the primes of a given range; thus it doesn’t scale well when generating on average 64-74 primes per second (at least on my computer).
+If left generating primes for the full 6 days of the challenge it would only generate about 33,177,600 to 38,361,600 primes. I wasn’t satisfied with that performance.</p>
+
+<h4 id="latest-version">Latest version:</h4>
+<p>run time of the first 2 billion primes: ~48 minutes</p>
+
+<p>I realize that it is likely that someone already has a database of primes, so why am I wasting compute resources and time generating primes?</p>
+
+<p>I found a “<a href="http://www.primos.mat.br/2T_en.html">database</a>” that has the first 2 billion primes (but also takes up ~20 GB).
+I wrote an python script to download all 20 GB of primes:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">"""Primes downloader
+Downloads 2 billion primes from http://www.primos.mat.br/2T_en.html for a total of 20 GB
+"""</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">"Chad Ross"</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s">"chadrt21@gmail.com"</span>
+<span class="n">__date__</span> <span class="o">=</span> <span class="s">"2020-11-30"</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">py7zr</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>   <span class="c1"># progress bar (may need to install package from: https://github.com/tqdm/tqdm)
+</span>
+
+<span class="c1"># Download &amp; unzip prime numbers files from: http://www.primos.mat.br/2T_en.html
+# Each file contains 10 million primes (~101 MB) -&gt; total of 2 billion primes (~20 GB)
+</span><span class="n">num_files</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">prime_files_URL</span> <span class="o">=</span> <span class="p">[</span><span class="s">'http://www.primos.mat.br/dados/2T_part{}.7z'</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">num_files</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<span class="n">prime_files</span> <span class="o">=</span> <span class="p">[</span><span class="s">'2T_part{}.7z'</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">num_files</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+
+<span class="c1"># Confirm download of 20 GB
+</span><span class="k">print</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"NOTE: Depending on internet speed this may take a up to a few hours."</span><span class="p">)</span>
+<span class="n">ask</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">"Do you want to download 2 billion primes which would take up 20 GB (y/n):"</span><span class="p">)</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">ask</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s">'Y'</span><span class="p">):</span>
+
+    <span class="c1"># Download files
+</span>    <span class="k">print</span><span class="p">(</span><span class="s">'Downloading files'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">prime_files</span><span class="p">))):</span>
+        <span class="nb">file</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prime_files_URL</span><span class="p">[</span><span class="n">c</span><span class="p">],</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="nb">open</span><span class="p">(</span><span class="n">prime_files</span><span class="p">[</span><span class="n">c</span><span class="p">],</span><span class="s">'wb'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">file</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+
+    <span class="c1"># Unzip files to current directory
+</span>    <span class="k">print</span><span class="p">(</span><span class="s">'Unzipping files'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">prime_files</span><span class="p">))):</span>
+        <span class="n">py7zr</span><span class="o">.</span><span class="n">SevenZipFile</span><span class="p">(</span><span class="n">prime_files</span><span class="p">[</span><span class="n">c</span><span class="p">],</span><span class="n">mode</span><span class="o">=</span><span class="s">'r'</span><span class="p">)</span><span class="o">.</span><span class="n">extractall</span><span class="p">()</span>
+
+    <span class="c1"># remove zip files
+</span>    <span class="k">print</span><span class="p">(</span><span class="s">'Removing zipped files'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">prime_files</span><span class="p">))):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">prime_files</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>After I have downloaded the 2 billion primes I refactored my code to go through those primes more efficiently.</p>
+
+<p>It now takes about 14 seconds for each prime file which each contain 10 million primes;
+thus take about 48 minutes to check the first 2 billion primes.
+Much improvement from the first iteration of this program to do the same number of primes.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>   <span class="c1"># progress bar (may need to install package from: https://github.com/tqdm/tqdm)
+</span>
+<span class="c1"># Download &amp; unzip prime numbers files from: http://www.primos.mat.br/2T_en.html
+# Each file contains 10 million primes (~101 MB) -&gt; total of 2 billion primes (~20 GB)
+</span><span class="n">num_files</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">prime_files</span> <span class="o">=</span> <span class="p">[</span><span class="s">'2T_part{}.txt'</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">num_files</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+
+<span class="n">n_array</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">file_count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">n_count</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">prime_files</span><span class="p">))):</span>
+
+    <span class="n">primes</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">prime_files</span><span class="p">[</span><span class="n">file_count</span><span class="p">])</span>
+    <span class="n">primes</span> <span class="o">=</span> <span class="n">primes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="n">primes_sq</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">primes</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">primes_cumsum</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">primes_sq</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)):</span>
+        <span class="k">if</span><span class="p">((</span><span class="n">primes_cumsum</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="n">n_count</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">n_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n_count</span><span class="p">)</span>
+        <span class="n">n_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">file_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="k">print</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'n_array:'</span><span class="p">,</span><span class="n">n_array</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'len(n_array):'</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">n_array</span><span class="p">))</span>
+<span class="k">print</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'max n:'</span><span class="p">,</span><span class="n">f</span><span class="s">'{n_array[-1]:,}'</span><span class="p">)</span>
+<span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s">'mpmp19_out.txt'</span><span class="p">,</span><span class="n">n_array</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">'</span><span class="si">%</span><span class="s">d'</span><span class="p">,</span><span class="n">header</span><span class="o">=</span><span class="s">'All n of the first {:,} primes'</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">n_count</span><span class="p">))</span>
+
+</code></pre></div></div>
+
+<h2 id="results">Results</h2>
+<p>The program found 124 primes that meet <a href="https://www.codecogs.com/eqnedit.php?latex=(\sum_{i=1}^{n}&space;p_i^2&space;)&space;%&space;n&space;=&space;0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?(\sum_{i=1}^{n}&space;p_i^2&space;)&space;%&space;n&space;=&space;0" title="(\sum_{i=1}^{n} p_i^2 ) % n = 0" /></a> in the first 2 billion primes:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># All n of the first 1,989,999,802 primes
+1
+19
+37
+455
+509
+575
+20,597
+65,440
+77,492
+232,688
+608,672
+801,215
+903,876
+1,411,584
+1,581,030
+1,693,696
+1,753,552
+1,777,664
+1,781,184
+1,830,912
+1,881,344
+2,455,062
+2,511,706
+2,863,408
+3,076,132
+4,169,664
+5,844,992
+6,099,712
+6,209,536
+6,368,064
+6,648,320
+8,388,608
+12,058,624
+16,777,216
+17,719,296
+19,378,816
+20,473,343
+20,971,520
+21,306,518
+21,757,952
+22,151,168
+26,515,392
+28,565,504
+32,758,064
+33,554,432
+37,545,984
+41,943,040
+48,041,728
+49,283,072
+49,383,296
+50,331,648
+50,495,755
+54,418,880
+56,555,520
+67,108,864
+67,371,008
+77,514,452
+81,687,936
+86,607,580
+88,381,184
+93,143,031
+94,489,900
+95,475,376
+100,663,296
+126,159,136
+134,217,728
+137,887,744
+142,653,848
+142,706,176
+150,994,944
+153,918,104
+159,383,552
+164,222,656
+167,772,160
+179,137,536
+190,143,680
+201,326,592
+238,640,512
+239,337,472
+243,752,960
+260,046,848
+261,062,656
+268,435,456
+318,115,328
+324,194,892
+329,252,864
+351,285,706
+355730,432
+369098752
+375390208
+385875968
+402653184
+404291584
+435995802
+443678720
+455294464
+469762048
+498581504
+503696192
+536870912
+584581120
+612368384
+621356544
+625655808
+631039494
+671088640
+696254464
+713226040
+771751936
+883556352
+940413696
+1028653056
+1031798784
+1073741824
+1090519040
+1160210560
+1198641152
+1249902592
+1374642176
+1400865537
+1440913408
+1559150592
+1856852720
+1962934272
+</code></pre></div></div>
+
+<p>I love simple problems like this which can show that programming is an iterative process.</p>
+:ET
